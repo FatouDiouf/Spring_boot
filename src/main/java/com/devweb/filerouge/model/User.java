@@ -37,11 +37,11 @@ public class User{
     private String adresse;
 
     @NotBlank
-    @Size(min=3, max = 20)
+    @Size(min=03, max = 20)
     private String telephone;
 
-    @NotBlank
-    @Size(min=3, max = 20)
+    //@NotBlank
+    @Size(min=0, max = 20)
     private String compte;
 
     @NotBlank

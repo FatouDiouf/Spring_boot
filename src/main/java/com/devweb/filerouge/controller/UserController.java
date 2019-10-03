@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Null;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,15 +31,15 @@ public class UserController {
     @Autowired
     PasswordEncoder encoder;
 
-    @GetMapping(value = "/liste")
+    @GetMapping(value = "/listeUser")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<User> liste(){
         return userRepository.findAll();
     }
 
-    @PostMapping(value = "/add", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String add (@RequestBody(required = false) Partajout p){
+    @PostMapping(value = "/partenaire", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public String addAdmin (@RequestBody(required = false) Partajout p){
 
         Partenaire part = new Partenaire();
         part.setAdresse(p.getAdresse());
@@ -65,12 +66,35 @@ public class UserController {
         u.setPassword(encoder.encode(p.getPassword()));
         u.setUsername(p.getUsername());
         u.setAdresse(p.getAdresse());
-        u.setCompte(p.getCompte());
+        u.setCompte("");
         u.setStatut(p.getStatut());
         u.setTelephone(p.getTelephone());
         u.setPartenaire(part);
         userRepository.save(u);
         return "partenaire ajoute";
-
     }
+
+    @PostMapping(value = "/caissier", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public String addCaissier (@RequestBody(required = false) Partajout p){
+
+        User user = new User();
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setId(p.getProfil());//l id sera envoyé grace au value du select
+        roles.add(role);
+        user.setRoles(roles);
+        user.setEmail(p.getEmail());
+        user.setName(p.getName());
+        user.setPassword(encoder.encode(p.getPassword()));
+        user.setUsername(p.getUsername());
+        user.setAdresse(p.getAdresse());
+        user.setCompte("NULL");
+        user.setStatut(p.getStatut());
+        user.setTelephone(p.getTelephone());
+        userRepository.save(user);
+
+        return "caissier ajouté";
+    }
+
 }

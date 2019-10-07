@@ -17,6 +17,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Boolean existsByEmail(String email);
     //@Query("SELECT u FROM User u WHERE u.login IS NULL")
     //public List<User> users();
-    //@Query("SELECT d FROM Depot d WHERE d.caissier = :user AND d.compte = :compte")
-    //List<Depot> findMesDepots(@Param("user")User caissier, @Param("compte")Compte compte);
-}
+    }

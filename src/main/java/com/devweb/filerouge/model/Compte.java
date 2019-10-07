@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "compte", uniqueConstraints = {
@@ -22,13 +23,18 @@ public class Compte {
     @Size(min=3, max = 30)
     private String numcompte;
 
-    @NotBlank
-    private String solde;
 
+    private double solde;
     @JoinColumn(name = "partenaire_id",referencedColumnName ="id")
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JsonIgnoreProperties("users")
+    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("comptes")
     private Partenaire partenaire;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy ="compte")
+    @JsonIgnoreProperties("compte")
+    private List<Depot> depots;
 
     public Compte() {
     }
@@ -49,12 +55,20 @@ public class Compte {
         this.numcompte = numcompte;
     }
 
-    public String getSolde() {
+    public double getSolde() {
         return solde;
     }
 
-    public void setSolde(String solde) {
+    public void setSolde(double solde) {
         this.solde = solde;
+    }
+
+    public List<Depot> getDepots() {
+        return depots;
+    }
+
+    public void setDepots(List<Depot> depots) {
+        this.depots = depots;
     }
 
     public Partenaire getPartenaire() {

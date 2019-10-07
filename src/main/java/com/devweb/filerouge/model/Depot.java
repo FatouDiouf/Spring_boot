@@ -1,5 +1,6 @@
 package com.devweb.filerouge.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "depot")
@@ -16,19 +18,20 @@ public class Depot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank
-    @Size(min=75000)
-    private String montant;
+    private double montant;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date datedepot;
+    private String datedepot;
 
+    @JsonIgnore
     @JoinColumn(name = "compte_id",referencedColumnName ="id")
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JsonIgnoreProperties("depot")
+    @JsonIgnoreProperties("compte")
     private Compte compte;
 
-    public Depot(int id, @NotBlank @Size(min = 75000) String montant, Date datedepot, Compte compte) {
+
+
+    public Depot(int id, @NotBlank @Size(min = 75000) double montant, String datedepot, Compte compte) {
         this.id = id;
         this.montant = montant;
         this.datedepot = datedepot;
@@ -46,19 +49,19 @@ public class Depot {
         this.id = id;
     }
 
-    public String getMontant() {
+    public double getMontant() {
         return montant;
     }
 
-    public void setMontant(String montant) {
+    public void setMontant(double montant) {
         this.montant = montant;
     }
 
-    public Date getDatedepot() {
+    public String getDatedepot() {
         return datedepot;
     }
 
-    public void setDatedepot(Date datedepot) {
+    public void setDatedepot(String datedepot) {
         this.datedepot = datedepot;
     }
 

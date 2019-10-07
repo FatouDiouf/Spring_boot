@@ -1,5 +1,9 @@
 package com.devweb.filerouge.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+
 public class Partajout {
 
     private String email;
@@ -19,7 +23,45 @@ public class Partajout {
     private double solde;
     private int profil;
 
+    private int id;
+    private double montant;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date datedepot;
+    private Compte compt;
+
     public Partajout() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public double getMontant() {
+        return montant;
+    }
+
+    public void setMontant(double montant) {
+        this.montant = montant;
+    }
+
+    public Date getDatedepot() {
+        return datedepot;
+    }
+
+    public void setDatedepot(Date datedepot) {
+        this.datedepot = datedepot;
+    }
+
+    public Compte getCompt() {
+        return compt;
+    }
+
+    public void setCompt(Compte compt) {
+        this.compt = compt;
     }
 
     public String getEmail() {

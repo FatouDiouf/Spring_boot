@@ -1,5 +1,6 @@
 package com.devweb.filerouge.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.NaturalId;
 
@@ -63,8 +64,8 @@ public class User{
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-    @JoinColumn(name = "partenaire_id",referencedColumnName ="id")
+    @JsonIgnore
+    @JoinColumn(name = "partenaire_id",referencedColumnName ="id",nullable = true)
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JsonIgnoreProperties("users")
     private Partenaire partenaire;

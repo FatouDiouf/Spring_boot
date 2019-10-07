@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Null;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +23,6 @@ import java.util.Set;
 public class UserController {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PartenaireRepository partenaireRepository;
     @Autowired
@@ -31,13 +30,19 @@ public class UserController {
     @Autowired
     PasswordEncoder encoder;
 
-    @GetMapping(value = "/listeUser")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public List<User> liste(){
+    @GetMapping(value = "/listepart")
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public List<Partenaire> liste(){
+        return partenaireRepository.findAll();
+    }
+
+    @GetMapping(value = "/listeuser")
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public List<User> lister(){
         return userRepository.findAll();
     }
 
-    @PostMapping(value = "/partenaire", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/userpart", consumes = {MediaType.APPLICATION_JSON_VALUE})
     @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
     public String addAdmin (@RequestBody(required = false) Partajout p){
 
@@ -51,7 +56,7 @@ public class UserController {
         Compte compte = new Compte();
         double x = (int)(Math.random()*((999999)+10));
         compte.setNumcompte(String.valueOf(x));
-        compte.setSolde("0");
+        compte.setSolde(0);
         compte.setPartenaire(part);
         compteRepository.save(compte);
 
@@ -97,4 +102,47 @@ public class UserController {
         return "caissier ajouté";
     }
 
-}
+    @GetMapping(value = "/compte/{id}")
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public String addCompte (@PathVariable("id") int id) {
+     Partenaire part = new Partenaire();
+     part=partenaireRepository.findById(id).orElseThrow();
+        Compte compte = new Compte();
+        double x = (int)(Math.random()*((999999)+10));
+        compte.setNumcompte(String.valueOf(x));
+        compte.setSolde(0);
+        compte.setPartenaire(part);
+        compteRepository.saveAndFlush(compte);
+        return " Compte ajouté!!!!";
+    }
+
+    @GetMapping("/edit/{id}")
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public String update(@PathVariable("id") int id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+       if (user.getUsername().equals("toufa")){
+          return "le Super administrateur ne peut pas être bloqué";
+       }
+        if(user.getStatut().equals("bloqué")){
+            user.setStatut("débloqué");
+        }else if(user.getStatut().equals("débloqué")){
+            user.setStatut("bloqué");
+        }
+        userRepository.saveAndFlush(user);
+        return "update-user";
+    }
+
+    @GetMapping("/edite/{id}")
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+    public String updatepart(@PathVariable("id") int id) {
+        Partenaire part = partenaireRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+        if(part.getStatut().equals("bloqué")){
+            part.setStatut("débloqué");
+        }else if(part.getStatut().equals("débloqué")){
+            part.setStatut("bloqué");
+        }
+        partenaireRepository.saveAndFlush(part);
+        return "partenaire modifié!!!!";
+    }
+
+    }
